@@ -1842,15 +1842,15 @@ __weak void HAL_QSPI_RxCpltCallback(QSPI_HandleTypeDef *hqspi)
   * @param  hqspi QSPI handle
   * @retval None
   */
-//__weak void HAL_QSPI_TxCpltCallback(QSPI_HandleTypeDef *hqspi)
-//{
-//  /* Prevent unused argument(s) compilation warning */
-//  UNUSED(hqspi);
+__weak void HAL_QSPI_TxCpltCallback(QSPI_HandleTypeDef *hqspi)
+{
+  /* Prevent unused argument(s) compilation warning */
+  UNUSED(hqspi);
 
-//  /* NOTE: This function should not be modified, when the callback is needed,
-//           the HAL_QSPI_TxCpltCallback could be implemented in the user file
-//   */
-//}
+  /* NOTE: This function should not be modified, when the callback is needed,
+           the HAL_QSPI_TxCpltCallback could be implemented in the user file
+   */
+}
 
 
 /**

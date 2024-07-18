@@ -10,23 +10,11 @@ MDMA_HandleTypeDef hmdma;
 void QSPI_GPIOInit(void)
 {
 	GPIO_InitTypeDef GPIO_InitStructure; 
-	RCC_PeriphCLKInitTypeDef PeriphClkInitStruct;
-	
-	PeriphClkInitStruct.PeriphClockSelection = RCC_PERIPHCLK_QSPI;
-	PeriphClkInitStruct.QspiClockSelection = RCC_QSPICLKSOURCE_D1HCLK;
-	
-	if (HAL_RCCEx_PeriphCLKConfig(&PeriphClkInitStruct) != HAL_OK)
-	{
-		Error_Handler();
-	}
 	
 	__HAL_RCC_GPIOE_CLK_ENABLE();
 	__HAL_RCC_GPIOD_CLK_ENABLE(); 
 	__HAL_RCC_GPIOB_CLK_ENABLE();
-	__HAL_RCC_QSPI_CLK_ENABLE();
 	
-	__HAL_RCC_QSPI_FORCE_RESET();
-	__HAL_RCC_QSPI_RELEASE_RESET();
   
 	GPIO_InitStructure.Pin=GPIO_PIN_11|GPIO_PIN_12|GPIO_PIN_13;
 	GPIO_InitStructure.Mode=GPIO_MODE_AF_PP;
@@ -59,19 +47,36 @@ void QSPI_GPIOInit(void)
 
 void QSPI_Init(void)
 {
+	__HAL_RCC_QSPI_CLK_ENABLE();
+	
+	__HAL_RCC_QSPI_FORCE_RESET();
+	__HAL_RCC_QSPI_RELEASE_RESET();
 	
 	QSPI_Handler.Instance=QUADSPI;
-	QSPI_Handler.Init.ChipSelectHighTime=QSPI_CS_HIGH_TIME_8_CYCLE;  //片选为高延时
+	QSPI_Handler.Init.ChipSelectHighTime=QSPI_CS_HIGH_TIME_1_CYCLE;  //片选为高延时
 	QSPI_Handler.Init.ClockMode=QSPI_CLOCK_MODE_3;					//配置时钟模式
-	QSPI_Handler.Init.ClockPrescaler=10;							//配置时钟分频比
+	QSPI_Handler.Init.ClockPrescaler=12-1;							//配置时钟分频比
 	QSPI_Handler.Init.DualFlash=QSPI_DUALFLASH_DISABLE;				//配置双闪存模式状态
 	QSPI_Handler.Init.FifoThreshold=32;								//配置FIFO中字节阈值（仅在间接模式使用）
 	QSPI_Handler.Init.FlashID=QSPI_FLASH_ID_1;						//配置使用的闪存
-	QSPI_Handler.Init.FlashSize=18;									//配置闪存大小
-	QSPI_Handler.Init.SampleShifting=QSPI_SAMPLE_SHIFTING_NONE; 	//配置采样移位
+	QSPI_Handler.Init.FlashSize=412*412*2-1;									//配置闪存大小
+	QSPI_Handler.Init.SampleShifting=QSPI_SAMPLE_SHIFTING_HALFCYCLE; 	//配置采样移位
 	HAL_QSPI_Init(&QSPI_Handler);
 	
-	HAL_NVIC_SetPriority(QUADSPI_IRQn, 5, 0);
+	QSPI_CmdInitStructure.Instruction = 0x32;
+	QSPI_CmdInitStructure.Address     = 0x000000;
+	QSPI_CmdInitStructure.DummyCycles = 0;
+	QSPI_CmdInitStructure.InstructionMode = QSPI_INSTRUCTION_1_LINE;
+	QSPI_CmdInitStructure.AddressMode  = QSPI_ADDRESS_1_LINE;
+	QSPI_CmdInitStructure.AddressSize  = QSPI_ADDRESS_24_BITS;
+	QSPI_CmdInitStructure.DataMode     = QSPI_DATA_NONE;
+	QSPI_CmdInitStructure.NbData       = 0;
+	QSPI_CmdInitStructure.SIOOMode     = QSPI_SIOO_INST_EVERY_CMD;
+	QSPI_CmdInitStructure.AlternateByteMode = QSPI_ALTERNATE_BYTES_NONE;
+	QSPI_CmdInitStructure.DdrMode      = QSPI_DDR_MODE_DISABLE;
+	QSPI_CmdInitStructure.DdrHoldHalfCycle = QSPI_DDR_HHC_ANALOG_DELAY;
+	
+	HAL_NVIC_SetPriority(QUADSPI_IRQn, 0x0f, 0);
 	HAL_NVIC_EnableIRQ(QUADSPI_IRQn);
 	
 	__HAL_RCC_MDMA_CLK_ENABLE();
@@ -83,8 +88,8 @@ void QSPI_Init(void)
 	hmdma.Init.Endianness =  MDMA_LITTLE_ENDIANNESS_PRESERVE;
 	hmdma.Init.SourceInc = MDMA_SRC_INC_BYTE;
 	hmdma.Init.DestinationInc =  MDMA_DEST_INC_DISABLE;
-	hmdma.Init.SourceDataSize =  MDMA_SRC_DATASIZE_HALFWORD;
-	hmdma.Init.DestDataSize = MDMA_DEST_DATASIZE_HALFWORD;
+	hmdma.Init.SourceDataSize =  MDMA_SRC_DATASIZE_BYTE;
+	hmdma.Init.DestDataSize = MDMA_DEST_INC_BYTE;
 	hmdma.Init.DataAlignment = MDMA_DATAALIGN_PACKENABLE;
 	hmdma.Init.BufferTransferLength = 128;
 	hmdma.Init.SourceBurst = MDMA_SOURCE_BURST_SINGLE;
@@ -92,17 +97,12 @@ void QSPI_Init(void)
 	hmdma.Init.SourceBlockAddressOffset = 0;
 	hmdma.Init.DestBlockAddressOffset = 0;
 	
-	if (HAL_MDMA_Init(&hmdma) != HAL_OK)
-  {
-      Error_Handler();
-  }
-	
 	__HAL_LINKDMA(&QSPI_Handler,hmdma,hmdma);
-
-	HAL_MDMA_DeInit(&hmdma);  
+  
+    HAL_MDMA_DeInit(&hmdma);  
 	HAL_MDMA_Init(&hmdma);
   
-	HAL_NVIC_SetPriority(MDMA_IRQn,5,0);
+	HAL_NVIC_SetPriority(MDMA_IRQn,0x00,0);
 	HAL_NVIC_EnableIRQ(MDMA_IRQn);
 }
 

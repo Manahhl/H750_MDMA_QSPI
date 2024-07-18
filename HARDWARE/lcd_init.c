@@ -400,56 +400,33 @@ void LCD_4LineTransmit_Byte(uint8_t reg,uint8_t dat)
 	
 }
 
-
-
-void HAL_QSPI_TxCpltCallback(QSPI_HandleTypeDef *hqspi)
-{  
-	printf("qspi tx cmp !!\r\n");
-    //rt_sem_release(&trans_sem);
-}
-
 void LCD_4LineTransmit_DATA(uint8_t reg,uint32_t len,uint8_t *dat)
 {
-	QSPI_CmdInitStructure.DummyCycles=0;
+	
 	QSPI_CmdInitStructure.Instruction=0x32;
-	QSPI_CmdInitStructure.InstructionMode=QSPI_INSTRUCTION_1_LINE;
-	
+	QSPI_CmdInitStructure.InstructionMode=QSPI_INSTRUCTION_1_LINE;	
 	QSPI_CmdInitStructure.Address=reg<<8;		
-	QSPI_CmdInitStructure.AddressMode=QSPI_ADDRESS_1_LINE;
-	QSPI_CmdInitStructure.AddressSize=QSPI_ADDRESS_24_BITS;
-	
+	QSPI_CmdInitStructure.AddressMode=QSPI_ADDRESS_1_LINE;	
 	QSPI_CmdInitStructure.DataMode=QSPI_DATA_4_LINES;
 	QSPI_CmdInitStructure.NbData=len;
-	QSPI_CmdInitStructure.SIOOMode=QSPI_SIOO_INST_EVERY_CMD;
-	QSPI_CmdInitStructure.DdrMode=QSPI_DDR_MODE_DISABLE;
-	QSPI_CmdInitStructure.DdrHoldHalfCycle=QSPI_DDR_HHC_ANALOG_DELAY;	
-	QSPI_CmdInitStructure.AlternateBytesSize=QSPI_ALTERNATE_BYTES_NONE;	
+
 	HAL_QSPI_Command(&QSPI_Handler,&QSPI_CmdInitStructure,HAL_QPSI_TIMEOUT_DEFAULT_VALUE);
 	HAL_QSPI_Transmit(&QSPI_Handler,dat,HAL_QSPI_TIMEOUT_DEFAULT_VALUE);	
 }
 
 void LCD_4LineTransmit_DATA_DMA(uint8_t reg,uint32_t len,uint8_t *dat)
 {
-	QSPI_CmdInitStructure.DummyCycles=0;
+	
 	QSPI_CmdInitStructure.Instruction=0x32;
-	QSPI_CmdInitStructure.InstructionMode=QSPI_INSTRUCTION_1_LINE;
-	
+	QSPI_CmdInitStructure.InstructionMode=QSPI_INSTRUCTION_1_LINE;	
 	QSPI_CmdInitStructure.Address=reg<<8;		
-	QSPI_CmdInitStructure.AddressMode=QSPI_ADDRESS_1_LINE;
-	QSPI_CmdInitStructure.AddressSize=QSPI_ADDRESS_24_BITS;
-	
+	QSPI_CmdInitStructure.AddressMode=QSPI_ADDRESS_1_LINE;	
 	QSPI_CmdInitStructure.DataMode=QSPI_DATA_4_LINES;
 	QSPI_CmdInitStructure.NbData=len;
-	QSPI_CmdInitStructure.SIOOMode=QSPI_SIOO_INST_EVERY_CMD;
-	QSPI_CmdInitStructure.DdrMode=QSPI_DDR_MODE_DISABLE;
-	QSPI_CmdInitStructure.DdrHoldHalfCycle=QSPI_DDR_HHC_ANALOG_DELAY;	
-	QSPI_CmdInitStructure.AlternateBytesSize=QSPI_ALTERNATE_BYTES_NONE;	
 	
-	for (uint32_t i = 0 ; i<412;i++)
-	{
-		HAL_QSPI_Command(&QSPI_Handler,&QSPI_CmdInitStructure,HAL_QPSI_TIMEOUT_DEFAULT_VALUE);	
-		while(HAL_QSPI_Transmit_DMA(&QSPI_Handler,dat) == HAL_OK);
-	}		
+	SCB_CleanDCache_by_Addr((uint32_t *)0x24000000, 512*1024);
+	HAL_QSPI_Command(&QSPI_Handler,&QSPI_CmdInitStructure,HAL_QPSI_TIMEOUT_DEFAULT_VALUE);	
+	HAL_QSPI_Transmit_DMA(&QSPI_Handler,dat);
 
 }
 

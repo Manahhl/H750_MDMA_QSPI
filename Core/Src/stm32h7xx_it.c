@@ -220,6 +220,7 @@ void USART1_IRQHandler(void)
  }
  void MDMA_IRQHandler()
  {
-	 HAL_MDMA_IRQHandler(&hmdma);
+	 HAL_MDMA_IRQHandler(QSPI_Handler.hmdma);
  }
+ 
 /* USER CODE END 1 */

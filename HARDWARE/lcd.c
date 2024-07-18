@@ -5,10 +5,8 @@
 #define BUFF_TOTAL 339488
 #define panle_y 412
 #define panel_x 412*2
-
-static uint8_t frame_cache[panle_y][panel_x]__attribute__((section(".ARM.__at_0x24000000"),used));
-
-//static uint8_t frame_cache[BUFF_TOTAL]__attribute__((section(".ARM.__at_0x24000000"),used));
+#define BUFF_N  64
+static uint8_t frame_cache[panle_y][panel_x]__attribute__((section(".ARM.__at_0x24000000")));
 
 extern QSPI_HandleTypeDef QSPI_Handler;
 extern QSPI_CommandTypeDef QSPI_CmdInitStructure;
@@ -32,49 +30,13 @@ uint16_t LCD_RGB233toRGB565(uint8_t color)
 								color       要填充的颜色
       返回值：  无
 ******************************************************************************/
-void LCD_Fill(uint16_t xs,uint16_t ys,uint16_t xe,uint16_t ye,uint32_t color)
-{
-	uint16_t i,j;
-	uint8_t Color[2]={color>>8,color&0xff};
-	LCD_Address_Set(xs,ys,xe-1,ye-1);
-	LCD_WR_REG(0x2C);
-	for(i=ys;i<ye;i++)
-	{
-		for(j=xs;j<xe;j++)
-		{
-			LCD_4LineTransmit_DATA(0x3C,2,Color);
-		}
-	}
-}
 void LCD_Fill1(uint16_t xs,uint16_t ys,uint16_t xe,uint16_t ye,uint32_t color)
 {
+	uint8_t Color[2] = {color >> 8, color & 0xff}; 
 	
-//    uint8_t Color[2] = {color >> 8, color & 0xff};
-//    
-//    // 创建缓冲区并填充颜色
-//    //uint8_t *buffer = (uint8_t*)malloc(size);
-//    for (uint32_t i = 0; i < BUFF_TOTAL/2; i++ ) {
-//        frame_cache[i*2] = Color[0];
-//        frame_cache[i *2+ 1] = Color[1];
-//    }
-
-//    LCD_Address_Set(0, 0, 412 - 1, 412 - 1);
-//    LCD_WR_REG(0x2C);
-
-//    // 使用DMA传输数据
-//	//for(uint32_t a= 0;a<BUFF_TOTAL/64;a++)
-//	//{
-//		LCD_4LineTransmit_DATA_DMA(0x3C,BUFF_TOTAL, frame_cache);
-//	//}
-//    // 释放缓冲区
-//    //free(buffer);
-
-    uint8_t Color[2] = {color >> 8, color & 0xff};
-    
-	//uint8_t Color[2] = {0x00,0x00};
 	for(uint32_t y = 0;y<412;y++)
 	{
-    // 填充 frame_cache 数组
+        // 填充 frame_cache 数组
 		for (uint32_t i = 0; i < 412; i ++)
 		{
 			frame_cache[y][i*2] = Color[0];
@@ -82,14 +44,15 @@ void LCD_Fill1(uint16_t xs,uint16_t ys,uint16_t xe,uint16_t ye,uint32_t color)
 		}
 	}
 	
-	SCB_CleanInvalidateDCache_by_Addr((uint32_t *)frame_cache,BUFF_TOTAL);
-	
-    LCD_Address_Set(0, 0, 412 - 1, 412 - 1);
+    LCD_Address_Set(xs, ys, xe, ye);
     LCD_WR_REG(0x2C);
-	for(uint32_t i=0;i<412;i++)
+
+	for(uint32_t a=0;a<412;a++)  //按行刷新
 	{
-		LCD_4LineTransmit_DATA_DMA(0x3C, panel_x, &frame_cache[i][0]);
+		//LCD_4LineTransmit_DATA(0x3C, panel_x, &frame_cache[a][0]);
+		LCD_4LineTransmit_DATA_DMA(0x3C, panel_x, &frame_cache[a][0]);
 	}
+	
 }
 
 
@@ -456,7 +419,7 @@ void LCD_ShowPicture(uint16_t x,uint16_t y,uint16_t length,uint16_t width,const 
 		{
 			Color[0]=pic[k*2];
 			Color[1]=pic[k*2+1];
-      LCD_4LineTransmit_DATA(0x3C,2,Color);
+			LCD_4LineTransmit_DATA(0x3C,2,Color);
 			k++;
 		}
 	}
@@ -477,7 +440,7 @@ void LCD_ShowPicture232(uint16_t x,uint16_t y,uint16_t length,uint16_t width,con
 			color=LCD_RGB233toRGB565(pic[k]);
 			Color[0]=color>>8;
 			Color[1]=color&0xff;
-      LCD_4LineTransmit_DATA(0x3C,2,Color);
+			LCD_4LineTransmit_DATA(0x3C,2,Color);
 			k++;
 		}
 	}

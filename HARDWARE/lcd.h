@@ -22,7 +22,7 @@ void LCD_ShowPicture(uint16_t x,uint16_t y,uint16_t length,uint16_t width,const 
 //»­±ÊÑÕÉ«
 #define WHITE         	 0xFFFF
 #define BLACK         	 0x0000	  
-#define BLUE           	 0x001F  
+#define BLUE           	 0x011F  
 #define BRED             0XF81F
 #define GRED 			       0XFFE0
 #define GBLUE			       0X07FF
