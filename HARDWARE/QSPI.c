@@ -55,7 +55,7 @@ void QSPI_Init(void)
 	QSPI_Handler.Instance=QUADSPI;
 	QSPI_Handler.Init.ChipSelectHighTime=QSPI_CS_HIGH_TIME_1_CYCLE;  //片选为高延时
 	QSPI_Handler.Init.ClockMode=QSPI_CLOCK_MODE_3;					//配置时钟模式
-	QSPI_Handler.Init.ClockPrescaler=12-1;							//配置时钟分频比
+	QSPI_Handler.Init.ClockPrescaler=10-1;							//配置时钟分频比
 	QSPI_Handler.Init.DualFlash=QSPI_DUALFLASH_DISABLE;				//配置双闪存模式状态
 	QSPI_Handler.Init.FifoThreshold=32;								//配置FIFO中字节阈值（仅在间接模式使用）
 	QSPI_Handler.Init.FlashID=QSPI_FLASH_ID_1;						//配置使用的闪存
@@ -84,12 +84,12 @@ void QSPI_Init(void)
 	hmdma.Instance = MDMA_Channel0;
 	hmdma.Init.Request = MDMA_REQUEST_QUADSPI_FIFO_TH;
 	hmdma.Init.TransferTriggerMode = MDMA_BUFFER_TRANSFER;
-	hmdma.Init.Priority =  MDMA_PRIORITY_HIGH;
+	hmdma.Init.Priority =  MDMA_PRIORITY_MEDIUM;
 	hmdma.Init.Endianness =  MDMA_LITTLE_ENDIANNESS_PRESERVE;
-	hmdma.Init.SourceInc = MDMA_SRC_INC_BYTE;
+	hmdma.Init.SourceInc = MDMA_SRC_INC_HALFWORD;
 	hmdma.Init.DestinationInc =  MDMA_DEST_INC_DISABLE;
-	hmdma.Init.SourceDataSize =  MDMA_SRC_DATASIZE_BYTE;
-	hmdma.Init.DestDataSize = MDMA_DEST_INC_BYTE;
+	hmdma.Init.SourceDataSize =  MDMA_SRC_DATASIZE_HALFWORD;
+	hmdma.Init.DestDataSize = MDMA_DEST_INC_HALFWORD;
 	hmdma.Init.DataAlignment = MDMA_DATAALIGN_PACKENABLE;
 	hmdma.Init.BufferTransferLength = 128;
 	hmdma.Init.SourceBurst = MDMA_SOURCE_BURST_SINGLE;
@@ -102,11 +102,35 @@ void QSPI_Init(void)
     HAL_MDMA_DeInit(&hmdma);  
 	HAL_MDMA_Init(&hmdma);
   
-	HAL_NVIC_SetPriority(MDMA_IRQn,0x00,0);
+	HAL_NVIC_SetPriority(MDMA_IRQn,0x05,0);
 	HAL_NVIC_EnableIRQ(MDMA_IRQn);
 }
 
+ void HAL_QSPI_MspDeInit(QSPI_HandleTypeDef* qspiHandle)
+{
 
+  if(qspiHandle->Instance==QUADSPI)
+  {
+    /* Peripheral clock disable */
+    __HAL_RCC_QSPI_CLK_DISABLE();
+
+    HAL_GPIO_DeInit(GPIOE, GPIO_PIN_2);
+
+    HAL_GPIO_DeInit(GPIOB, GPIO_PIN_2|GPIO_PIN_6);
+
+    HAL_GPIO_DeInit(GPIOD, GPIO_PIN_11|GPIO_PIN_12|GPIO_PIN_13);
+	  
+	 /* 复位QSPI */
+	__HAL_RCC_QSPI_FORCE_RESET();
+	__HAL_RCC_QSPI_RELEASE_RESET();
+
+    /* QUADSPI MDMA DeInit */
+    HAL_MDMA_DeInit(qspiHandle->hmdma);
+
+    /* QUADSPI interrupt Deinit */
+    HAL_NVIC_DisableIRQ(QUADSPI_IRQn);
+  }
+}
 
 
 

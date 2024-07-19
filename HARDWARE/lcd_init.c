@@ -416,7 +416,6 @@ void LCD_4LineTransmit_DATA(uint8_t reg,uint32_t len,uint8_t *dat)
 
 void LCD_4LineTransmit_DATA_DMA(uint8_t reg,uint32_t len,uint8_t *dat)
 {
-	
 	QSPI_CmdInitStructure.Instruction=0x32;
 	QSPI_CmdInitStructure.InstructionMode=QSPI_INSTRUCTION_1_LINE;	
 	QSPI_CmdInitStructure.Address=reg<<8;		
@@ -424,10 +423,8 @@ void LCD_4LineTransmit_DATA_DMA(uint8_t reg,uint32_t len,uint8_t *dat)
 	QSPI_CmdInitStructure.DataMode=QSPI_DATA_4_LINES;
 	QSPI_CmdInitStructure.NbData=len;
 	
-	SCB_CleanDCache_by_Addr((uint32_t *)0x24000000, 512*1024);
 	HAL_QSPI_Command(&QSPI_Handler,&QSPI_CmdInitStructure,HAL_QPSI_TIMEOUT_DEFAULT_VALUE);	
 	HAL_QSPI_Transmit_DMA(&QSPI_Handler,dat);
-
 }
 
 void LCD_Address_Set(uint16_t xs,uint16_t ys,uint16_t xe,uint16_t ye)

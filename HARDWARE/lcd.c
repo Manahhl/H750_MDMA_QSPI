@@ -2,12 +2,18 @@
 #include "lcdfont.h"
 #include "stdlib.h"
 #include "main.h"
+#include "lvgl.h"
 #define BUFF_TOTAL 339488
 #define panle_y 412
 #define panel_x 412*2
 #define BUFF_N  64
-static uint8_t frame_cache[panle_y][panel_x]__attribute__((section(".ARM.__at_0x24000000")));
+#define use_qspi 0
 
+#if use_qspi
+static uint8_t frame_cache[panle_y][panel_x]__attribute__((section(".ARM.__at_0x24000000")));
+#else
+//static uint8_t frame_cache[BUFF_TOTAL]__attribute__((section(".ARM.__at_0x24000000")));
+#endif
 extern QSPI_HandleTypeDef QSPI_Handler;
 extern QSPI_CommandTypeDef QSPI_CmdInitStructure;
 extern MDMA_HandleTypeDef hmdma;
@@ -30,6 +36,7 @@ uint16_t LCD_RGB233toRGB565(uint8_t color)
 								color       要填充的颜色
       返回值：  无
 ******************************************************************************/
+#if use_qspi
 void LCD_Fill1(uint16_t xs,uint16_t ys,uint16_t xe,uint16_t ye,uint32_t color)
 {
 	uint8_t Color[2] = {color >> 8, color & 0xff}; 
@@ -49,13 +56,51 @@ void LCD_Fill1(uint16_t xs,uint16_t ys,uint16_t xe,uint16_t ye,uint32_t color)
 
 	for(uint32_t a=0;a<412;a++)  //按行刷新
 	{
-		//LCD_4LineTransmit_DATA(0x3C, panel_x, &frame_cache[a][0]);
-		LCD_4LineTransmit_DATA_DMA(0x3C, panel_x, &frame_cache[a][0]);
+		LCD_4LineTransmit_DATA(0x3C, panel_x, &frame_cache[a][0]);
 	}
 	
 }
 
+#else
 
+//void LCD_Fill1(uint16_t xs,uint16_t ys,uint16_t xe,uint16_t ye,uint32_t color)
+//{
+//	uint8_t Color[2] = {color >> 8, color & 0xff}; 
+//	
+//	 // 填充 frame_cache 数组
+//	for (uint32_t i = 0; i < 169744; i ++)
+//	{
+//		frame_cache[i*2] = Color[0];
+//		frame_cache[i*2 + 1] = Color[1];
+//	}
+//	
+//    LCD_Address_Set(xs, ys, xe, ye);
+//    LCD_WR_REG(0x2C);
+
+//	for(uint32_t a=0;a<206;a++)  //按行刷新
+//	{
+//		LCD_4LineTransmit_DATA_DMA(0x3C, 412*4, &frame_cache[a*412*4]);
+//	}
+//	
+//}
+
+#endif
+
+extern void LV_ATTRIBUTE_FLUSH_READY lv_disp_flush_ready(lv_disp_drv_t * disp_drv);
+extern lv_disp_drv_t *disp_drv;
+void HAL_QSPI_TxCpltCallback(QSPI_HandleTypeDef *hqspi)
+{
+	lv_disp_flush_ready(&disp_drv);
+}
+
+void LCD_Fill(uint16_t xs,uint16_t ys,uint16_t xe,uint16_t ye,lv_color_t *color)
+{
+	uint32_t send_size = ((xe- xs + 1) * (ye - ys+1) * sizeof(lv_color_t));
+	LCD_Address_Set(xs,ys,xe,ye);
+	LCD_WR_REG(0x2c);
+	SCB_CleanDCache_by_Addr((uint32_t *)0x24000000, 100*1024);
+	LCD_4LineTransmit_DATA_DMA(0x3c,send_size,(uint8_t *)color);
+}
 /******************************************************************************
       函数说明：显示汉字串
       入口数据：x,y显示坐标

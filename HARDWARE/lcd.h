@@ -1,9 +1,9 @@
 #ifndef _LCD_H_
 #define _LCD_H_
-
+#include "lvgl.h"
 #include "lcd_init.h"
 void LCD_Fill1(uint16_t xs,uint16_t ys,uint16_t xe,uint16_t ye,uint32_t color);
-void LCD_Fill(uint16_t xs,uint16_t ys,uint16_t xe,uint16_t ye,uint32_t color);
+void LCD_Fill(uint16_t xs,uint16_t ys,uint16_t xe,uint16_t ye,lv_color_t *color);
 void LCD_ShowChinese(uint16_t x,uint16_t y,uint8_t*s,uint16_t fc,uint16_t bc,uint8_t sizey);//显示汉字串
 void LCD_ShowChinese12x12(uint16_t x,uint16_t y,uint8_t*s,uint16_t fc,uint16_t bc,uint8_t sizey);//显示单个12x12汉字
 void LCD_ShowChinese16x16(uint16_t x,uint16_t y,uint8_t*s,uint16_t fc,uint16_t bc,uint8_t sizey);//显示单个16x16汉字
