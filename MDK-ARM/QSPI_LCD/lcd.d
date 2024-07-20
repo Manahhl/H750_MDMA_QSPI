@@ -215,9 +215,10 @@ qspi_lcd/lcd.o: ..\HARDWARE\lcd.c ..\HARDWARE\lcd.h ..\LVGL\lvgl.h \
   ..\Drivers\STM32H7xx_HAL_Driver\Inc\stm32h7xx_hal_pwr.h \
   ..\Drivers\STM32H7xx_HAL_Driver\Inc\stm32h7xx_hal_pwr_ex.h \
   ..\Drivers\STM32H7xx_HAL_Driver\Inc\stm32h7xx_hal_qspi.h \
+  ..\Drivers\STM32H7xx_HAL_Driver\Inc\stm32h7xx_hal_tim.h \
+  ..\Drivers\STM32H7xx_HAL_Driver\Inc\stm32h7xx_hal_tim_ex.h \
   ..\Drivers\STM32H7xx_HAL_Driver\Inc\stm32h7xx_hal_uart.h \
   ..\Drivers\STM32H7xx_HAL_Driver\Inc\stm32h7xx_hal_uart_ex.h \
-  ..\HARDWARE\lcdfont.h \
   D:\Program\ Files\ (x86)\Keil5\CORE\ARM\ARMCLANG\Bin\..\include\stdlib.h \
   ..\Core\Inc\main.h \
   D:\Program\ Files\ (x86)\Keil5\CORE\ARM\ARMCLANG\Bin\..\include\stdio.h

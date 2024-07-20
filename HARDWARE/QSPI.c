@@ -53,7 +53,7 @@ void QSPI_Init(void)
 	__HAL_RCC_QSPI_RELEASE_RESET();
 	
 	QSPI_Handler.Instance=QUADSPI;
-	QSPI_Handler.Init.ChipSelectHighTime=QSPI_CS_HIGH_TIME_1_CYCLE;  //片选为高延时
+	QSPI_Handler.Init.ChipSelectHighTime=QSPI_CS_HIGH_TIME_8_CYCLE;  //片选为高延时
 	QSPI_Handler.Init.ClockMode=QSPI_CLOCK_MODE_3;					//配置时钟模式
 	QSPI_Handler.Init.ClockPrescaler=10-1;							//配置时钟分频比
 	QSPI_Handler.Init.DualFlash=QSPI_DUALFLASH_DISABLE;				//配置双闪存模式状态
@@ -129,6 +129,9 @@ void QSPI_Init(void)
 
     /* QUADSPI interrupt Deinit */
     HAL_NVIC_DisableIRQ(QUADSPI_IRQn);
+	  
+	/* MDMA interrupt Deinit */
+    HAL_NVIC_DisableIRQ(MDMA_IRQn);
   }
 }
 

@@ -1,4 +1,4 @@
-qspi_lcd/main.o: ..\Core\Src\main.c ..\Core\Inc\main.h \
+qspi_lcd/tim.o: ..\Core\Src\tim.c ..\Core\Inc\tim.h ..\Core\Inc\main.h \
   ..\Drivers\STM32H7xx_HAL_Driver\Inc\stm32h7xx_hal.h \
   ..\Core\Inc\stm32h7xx_hal_conf.h \
   ..\Drivers\STM32H7xx_HAL_Driver\Inc\stm32h7xx_hal_rcc.h \
@@ -38,8 +38,7 @@ qspi_lcd/main.o: ..\Core\Src\main.c ..\Core\Inc\main.h \
   ..\Drivers\STM32H7xx_HAL_Driver\Inc\stm32h7xx_hal_uart.h \
   ..\Drivers\STM32H7xx_HAL_Driver\Inc\stm32h7xx_hal_uart_ex.h \
   D:\Program\ Files\ (x86)\Keil5\CORE\ARM\ARMCLANG\Bin\..\include\stdio.h \
-  ..\Core\Inc\usart.h ..\Core\Inc\main.h ..\Core\Inc\gpio.h \
-  ..\HARDWARE\lcd.h ..\LVGL\lvgl.h ..\LVGL\src\misc\lv_log.h \
+  ..\LVGL\lvgl.h ..\LVGL\src\misc\lv_log.h \
   ..\LVGL\src\misc\..\lv_conf_internal.h ..\LVGL\src\lv_conf_kconfig.h \
   ..\LVGL\lv_conf.h ..\LVGL\src\misc\lv_types.h \
   ..\LVGL\src\misc\lv_timer.h ..\LVGL\src\misc\..\hal\lv_hal_tick.h \
@@ -220,5 +219,4 @@ qspi_lcd/main.o: ..\Core\Src\main.c ..\Core\Inc\main.h \
   ..\LVGL\src\extra\widgets\imgbtn\lv_imgbtn.h \
   ..\LVGL\src\extra\widgets\imgbtn\..\..\..\lvgl.h \
   ..\LVGL\src\extra\widgets\span\lv_span.h \
-  ..\LVGL\src\extra\widgets\span\..\..\..\lvgl.h ..\HARDWARE\lcd_init.h \
-  ..\HARDWARE\QSPI.h ..\Core\Inc\tim.h
+  ..\LVGL\src\extra\widgets\span\..\..\..\lvgl.h

@@ -167,7 +167,7 @@ void disp_disable_update(void)
  *'lv_disp_flush_ready()' has to be called when finished.*/
 void disp_flush(lv_disp_drv_t * disp_drv, const lv_area_t * area, lv_color_t * color_p)
 {
-	printf("disp_flush_enabled = %d",disp_flush_enabled);
+	//printf("disp_flush_enabled = %d",disp_flush_enabled);
     if(disp_flush_enabled) 
 	{ 
 		LCD_Fill(area->x1,area->y1,area->x2,area->y2,color_p);		

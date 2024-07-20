@@ -5,6 +5,7 @@
 "qspi_lcd\usart.o"
 "qspi_lcd\stm32h7xx_it.o"
 "qspi_lcd\stm32h7xx_hal_msp.o"
+"qspi_lcd\tim.o"
 "qspi_lcd\stm32h7xx_hal_cortex.o"
 "qspi_lcd\stm32h7xx_hal_tim.o"
 "qspi_lcd\stm32h7xx_hal_tim_ex.o"
