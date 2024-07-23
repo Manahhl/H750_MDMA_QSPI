@@ -76,6 +76,10 @@ void MX_GPIO_Init(void)
 }
 
 /* USER CODE BEGIN 2 */
+/**data：2024/07/23
+** test：测试使用GPIO读取te信号实现画面同步
+** conlusion：测试不通
+*/
 //extern volatile uint8_t QSPI_TX;
 //extern lv_disp_drv_t *disp_drv;
 void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
