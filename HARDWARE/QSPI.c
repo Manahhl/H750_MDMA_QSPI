@@ -55,12 +55,12 @@ void QSPI_Init(void)
 	QSPI_Handler.Instance=QUADSPI;
 	QSPI_Handler.Init.ChipSelectHighTime=QSPI_CS_HIGH_TIME_8_CYCLE;  //片选为高延时
 	QSPI_Handler.Init.ClockMode=QSPI_CLOCK_MODE_3;					//配置时钟模式
-	QSPI_Handler.Init.ClockPrescaler=10-1;							//配置时钟分频比
+	QSPI_Handler.Init.ClockPrescaler=4;							//配置时钟分频比
 	QSPI_Handler.Init.DualFlash=QSPI_DUALFLASH_DISABLE;				//配置双闪存模式状态
 	QSPI_Handler.Init.FifoThreshold=32;								//配置FIFO中字节阈值（仅在间接模式使用）
 	QSPI_Handler.Init.FlashID=QSPI_FLASH_ID_1;						//配置使用的闪存
-	QSPI_Handler.Init.FlashSize=412*412*2-1;									//配置闪存大小
-	QSPI_Handler.Init.SampleShifting=QSPI_SAMPLE_SHIFTING_HALFCYCLE; 	//配置采样移位
+	QSPI_Handler.Init.FlashSize=17;									//配置闪存大小
+	QSPI_Handler.Init.SampleShifting=QSPI_SAMPLE_SHIFTING_NONE; 	//配置采样移位
 	HAL_QSPI_Init(&QSPI_Handler);
 	
 	QSPI_CmdInitStructure.Instruction = 0x32;
@@ -85,9 +85,9 @@ void QSPI_Init(void)
 	hmdma.Init.Request = MDMA_REQUEST_QUADSPI_FIFO_TH;
 	hmdma.Init.TransferTriggerMode = MDMA_BUFFER_TRANSFER;
 	hmdma.Init.Priority =  MDMA_PRIORITY_MEDIUM;
-	hmdma.Init.Endianness =  MDMA_LITTLE_ENDIANNESS_PRESERVE;
+	hmdma.Init.Endianness =  MDMA_LITTLE_HALFWORD_ENDIANNESS_EXCHANGE;
 	hmdma.Init.SourceInc = MDMA_SRC_INC_HALFWORD;
-	hmdma.Init.DestinationInc =  MDMA_DEST_INC_DISABLE;
+	hmdma.Init.DestinationInc =  MDMA_DEST_INC_HALFWORD;
 	hmdma.Init.SourceDataSize =  MDMA_SRC_DATASIZE_HALFWORD;
 	hmdma.Init.DestDataSize = MDMA_DEST_INC_HALFWORD;
 	hmdma.Init.DataAlignment = MDMA_DATAALIGN_PACKENABLE;

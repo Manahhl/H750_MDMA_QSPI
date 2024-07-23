@@ -146,14 +146,23 @@ void PendSV_Handler(void)
 /**
   * @brief This function handles System tick timer.
   */
+#if USE_TICK 
+extern volatile uint16_t ms_cnt_1; // 计时变量1
+extern volatile uint16_t ms_cnt_2; // 计时变量2
+#endif
 void SysTick_Handler(void)
 {
   /* USER CODE BEGIN SysTick_IRQn 0 */
 
   /* USER CODE END SysTick_IRQn 0 */
 	HAL_IncTick();
+	
+	#if USE_TICK 
+	ms_cnt_1++;
+	ms_cnt_2++;
   /* USER CODE BEGIN SysTick_IRQn 1 */
-	//lv_tick_inc(1);
+	lv_tick_inc(1);
+	#endif
   /* USER CODE END SysTick_IRQn 1 */
 }
 
@@ -172,7 +181,7 @@ void USART1_IRQHandler(void)
   /* USER CODE BEGIN USART1_IRQn 0 */
 
   /* USER CODE END USART1_IRQn 0 */
-  HAL_UART_IRQHandler(&huart1);
+  //HAL_UART_IRQHandler(&huart1);
   /* USER CODE BEGIN USART1_IRQn 1 */
 
   /* USER CODE END USART1_IRQn 1 */

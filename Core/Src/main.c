@@ -13,67 +13,9 @@
 #include "lcd.h"
 #include "lvgl.h"
 #include "tim.h"
+
 void SystemClock_Config(void);
-static void MPU_Initialize(void);
 static void MPU_Config(void);
-
-static void obj_add_anim()
-{
-    lv_anim_t a;
-    memset(&a, 0, sizeof(lv_anim_t));
-
-    lv_anim_t b;
-    memset(&b, 0, sizeof(lv_anim_t));
-
-    lv_obj_t *screen = lv_scr_act();
-    lv_obj_t *obj = lv_obj_create(screen);
-    lv_obj_t *obj1 = lv_obj_create(screen);
-    lv_obj_set_pos(obj, 0, 0);
-    lv_obj_set_size(obj, 50, 50);
-    lv_obj_set_style_bg_color(obj, lv_palette_main(LV_PALETTE_BLUE), 0);
-
-    lv_obj_set_pos(obj1, 120, 0);
-    lv_obj_set_size(obj1, 50, 50);
-    lv_obj_set_style_bg_color(obj1, lv_palette_main(LV_PALETTE_PINK), 0);
-
-    a.var = obj; // 动画对象
-
-    a.exec_cb = (lv_anim_exec_xcb_t)lv_obj_set_y; // y轴移动
-    a.time = lv_anim_speed_to_time(50, 0, 120);   // 1s的动画时间
-    a.start_value = 0;                            // 开始坐标
-    a.end_value = 120;                            // 结束坐标
-
-    a.act_time = -500; // 第一次做动画时，延时500ms
-
-    a.path_cb = lv_anim_path_bounce; // 模拟弹性物体下落
-                                     // a.ready_cb = ready_call_back;  // 自定义打印函数 可开启
-
-    a.playback_time = 1;    // 不开启动画回放
-    a.playback_delay = 200; // 回放延时时间
-
-    a.repeat_cnt = 10000; // 重复动画次数
-    a.repeat_delay = 200; // 每次重复动画的延时时间
-    lv_anim_start(&a);    // 调用函数开始动画
-
-    b.var = obj1; // 动画对象
-
-    b.exec_cb = (lv_anim_exec_xcb_t)lv_obj_set_y; // y轴移动
-    b.time = lv_anim_speed_to_time(20, 0, 120);   // 1s的动画时间
-    b.start_value = 0;                            // 开始坐标
-    b.end_value = 120;                            // 结束坐标
-
-    b.act_time = -500; // 第一次做动画时，延时500ms
-
-    b.path_cb = lv_anim_path_bounce; // 模拟弹性物体下落
-    // a.ready_cb = ready_call_back;  // 自定义打印函数 可开启
-
-    b.playback_time = 1;    // 不开启动画回放
-    b.playback_delay = 200; // 回放延时时间
-
-    b.repeat_cnt = 10000;   // 重复动画次数
-    b.repeat_delay = 200; // 每次重复动画的延时时间
-    lv_anim_start(&b);    // 调用函数开始动画
-}
 
 extern void lv_demo_stress(void);
 extern void lv_demo_music(void);
@@ -87,32 +29,50 @@ void CPU_CACHE_Enable(void)
     SCB_EnableDCache();
 }
 
+#if USE_TICK
+volatile uint16_t ms_cnt_1 = 0; // 计时变量1
+volatile uint16_t ms_cnt_2 = 0; // 计时变量2
+#endif
 
 int main(void)
 {    
 	MPU_Config();	
 	HAL_Init();	
 	CPU_CACHE_Enable();	
-	SystemClock_Config();
+	SystemClock_Config(); 
 	MX_GPIO_Init();
 	QSPI_GPIOInit();
 	QSPI_Init();
 	MX_USART1_UART_Init();
-	MX_TIM7_Init();
+	
+	#if USE_TICK ==0
+	 MX_TIM7_Init();
+	#endif
 	
 	
 	lv_init();
 	lv_port_disp_init();
-	//LCD_Init();
-	//LCD_Fill(0,0,LCD_W,LCD_H,WHITE);
+
 	//obj_add_anim();
 	//lv_demo_stress();
 	lv_demo_music();
     
   while (1)
   {
+	 #if USE_TICK 
+	  if (ms_cnt_2 >= 5)
+      {
+         ms_cnt_2 = 0;      // 计时清零
+         lv_task_handler(); // LVGL任务处理
+      }
+     if (ms_cnt_1 >= 500) // 判断是否计时到500ms
+     {
+         ms_cnt_1 = 0; // 计时清零
+     }
+	 #else
 	 HAL_Delay(5);
 	 lv_task_handler();
+	 #endif
   }
 	
 }
@@ -164,8 +124,8 @@ void SystemClock_Config(void)
 	/** Initializes the CPU, AHB and APB buses clocks
 	*/
 	RCC_ClkInitStruct.ClockType = RCC_CLOCKTYPE_HCLK|RCC_CLOCKTYPE_SYSCLK
-                              |RCC_CLOCKTYPE_PCLK1|RCC_CLOCKTYPE_PCLK2
-								|RCC_CLOCKTYPE_D3PCLK1|RCC_CLOCKTYPE_D1PCLK1;
+									|RCC_CLOCKTYPE_PCLK1|RCC_CLOCKTYPE_PCLK2
+									|RCC_CLOCKTYPE_D3PCLK1|RCC_CLOCKTYPE_D1PCLK1;
 	RCC_ClkInitStruct.SYSCLKSource = RCC_SYSCLKSOURCE_PLLCLK;
 	RCC_ClkInitStruct.SYSCLKDivider = RCC_SYSCLK_DIV1;
 	RCC_ClkInitStruct.AHBCLKDivider = RCC_HCLK_DIV2;
@@ -205,8 +165,8 @@ static void MPU_Config(void)
     MPU_InitStruct.BaseAddress 		= 0x24000000;
     MPU_InitStruct.Size 			= MPU_REGION_SIZE_512KB;
 	MPU_InitStruct.AccessPermission = MPU_REGION_FULL_ACCESS;
-	MPU_InitStruct.IsBufferable     = MPU_ACCESS_BUFFERABLE;
-	MPU_InitStruct.IsCacheable      = MPU_ACCESS_CACHEABLE;     /* 不要CACHE */
+	MPU_InitStruct.IsBufferable     = MPU_ACCESS_NOT_BUFFERABLE;
+	MPU_InitStruct.IsCacheable      = MPU_ACCESS_CACHEABLE;    
 	MPU_InitStruct.IsShareable      = MPU_ACCESS_NOT_SHAREABLE;
     MPU_InitStruct.Number 			= MPU_REGION_NUMBER0;
     MPU_InitStruct.TypeExtField 	= MPU_TEX_LEVEL0;

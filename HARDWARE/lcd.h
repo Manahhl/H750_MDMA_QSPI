@@ -4,20 +4,7 @@
 #include "lcd_init.h"
 void LCD_Fill1(uint16_t xs,uint16_t ys,uint16_t xe,uint16_t ye,uint32_t color);
 void LCD_Fill(uint16_t xs,uint16_t ys,uint16_t xe,uint16_t ye,lv_color_t *color);
-void LCD_ShowChinese(uint16_t x,uint16_t y,uint8_t*s,uint16_t fc,uint16_t bc,uint8_t sizey);//显示汉字串
-void LCD_ShowChinese12x12(uint16_t x,uint16_t y,uint8_t*s,uint16_t fc,uint16_t bc,uint8_t sizey);//显示单个12x12汉字
-void LCD_ShowChinese16x16(uint16_t x,uint16_t y,uint8_t*s,uint16_t fc,uint16_t bc,uint8_t sizey);//显示单个16x16汉字
-void LCD_ShowChinese24x24(uint16_t x,uint16_t y,uint8_t*s,uint16_t fc,uint16_t bc,uint8_t sizey);//显示单个24x24汉字
-void LCD_ShowChinese32x32(uint16_t x,uint16_t y,uint8_t*s,uint16_t fc,uint16_t bc,uint8_t sizey);//显示单个32x32汉字
-
-void LCD_ShowChar(uint16_t x,uint16_t y,uint8_t num,uint16_t fc,uint16_t bc,uint8_t sizey);//显示一个字符
-void LCD_ShowString(uint16_t x,uint16_t y,const uint8_t *p,uint16_t fc,uint16_t bc,uint8_t sizey);//显示字符串
-uint32_t mypow(uint8_t m,uint8_t n);//求幂
-void LCD_ShowIntNum(uint16_t x,uint16_t y,uint16_t num,uint8_t len,uint16_t fc,uint16_t bc,uint8_t sizey);//显示整数变量
-void LCD_ShowFloatNum1(uint16_t x,uint16_t y,float num,uint8_t len,uint16_t fc,uint16_t bc,uint8_t sizey);//显示两位小数变量
-
-void LCD_ShowPicture(uint16_t x,uint16_t y,uint16_t length,uint16_t width,const uint8_t pic[]);//显示图片
-
+void obj_add_anim();
 
 //画笔颜色
 #define WHITE         	 0xFFFF

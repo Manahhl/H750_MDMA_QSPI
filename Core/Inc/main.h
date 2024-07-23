@@ -31,11 +31,13 @@ extern "C" {
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 #include "stdio.h"
+#include "lvgl.h"
 /* USER CODE END Includes */
 
 /* Exported types ------------------------------------------------------------*/
 /* USER CODE BEGIN ET */
-
+extern void disp_enable_update(void);
+extern void disp_disable_update(void);
 /* USER CODE END ET */
 
 /* Exported constants --------------------------------------------------------*/
@@ -58,7 +60,7 @@ void Error_Handler(void);
 /* Private defines -----------------------------------------------------------*/
 
 /* USER CODE BEGIN Private defines */
-
+ #define USE_TICK 0
 /* USER CODE END Private defines */
 
 #ifdef __cplusplus

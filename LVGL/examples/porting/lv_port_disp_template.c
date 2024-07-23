@@ -13,6 +13,7 @@
 #include <stdbool.h>
 #include "lv_hal_disp.h"
 #include "lcd.h"
+#include "stm32h7xx.h"
 /*********************
  *      DEFINES
  *********************/
@@ -172,10 +173,6 @@ void disp_flush(lv_disp_drv_t * disp_drv, const lv_area_t * area, lv_color_t * c
 	{ 
 		LCD_Fill(area->x1,area->y1,area->x2,area->y2,color_p);		
     }
-
-    /*IMPORTANT!!!
-     *Inform the graphics library that you are ready with the flushing*/
-    //lv_disp_flush_ready(disp_drv);
 }
 
 /*OPTIONAL: GPU INTERFACE*/
