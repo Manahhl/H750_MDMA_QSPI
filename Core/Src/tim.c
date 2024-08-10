@@ -75,11 +75,14 @@ void HAL_TIM_Base_MspDeInit(TIM_HandleTypeDef* tim_baseHandle)
   }
  
  }
+
+ uint8_t lvgl_task = 0;
 void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 {
-	if(htim->Instance == htim7.Instance)
+	if((htim->Instance == htim7.Instance))
 	{
 		lv_tick_inc(1);
+		lvgl_task ++;
 	}
 }
 

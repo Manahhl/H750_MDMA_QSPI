@@ -12,8 +12,7 @@
 #include "lv_port_disp_template.h"
 #include <stdbool.h>
 #include "lv_hal_disp.h"
-#include "lcd.h"
-#include "stm32h7xx.h"
+#include "main.h"
 /*********************
  *      DEFINES
  *********************/
@@ -30,10 +29,20 @@
 /**********************
  *      TYPEDEFS
  **********************/
-#define LV_VER_SIZE 79
-static lv_disp_draw_buf_t draw_buf_dsc_1;
-static lv_color_t buf_1[MY_DISP_HOR_RES * LV_VER_SIZE]__attribute__((section(".ARM.__at_0x24000000")));
-	
+//#define LV_VER_SIZE 79
+//static lv_disp_draw_buf_t draw_buf_dsc_1;
+////ALIGN_32BYTES(static lv_color_t buf_1[MY_DISP_HOR_RES * LV_VER_SIZE]__attribute__((section(".ARM.__at_0x24000000"))));
+//__attribute__((section (".RAM_D2"))) static lv_color_t buf_1[MY_DISP_HOR_RES * LV_VER_SIZE];//__attribute__((section(".ARM.__at_0x24000000")));	
+
+
+//开启Dcache不会影响画面数据	
+//static lv_disp_draw_buf_t draw_buf_dsc_1;
+
+//__attribute__((section (".RAM_D2"))) static lv_color_t buf_1[SRAM1_SIZE];
+
+//#define BUF1_ROWS (SRAM1_SIZE/4 /(MY_DISP_HOR_RES * sizeof(lv_color_t)))
+
+
 	
 /**********************
  *  STATIC PROTOTYPES
@@ -41,8 +50,6 @@ static lv_color_t buf_1[MY_DISP_HOR_RES * LV_VER_SIZE]__attribute__((section(".A
 static void disp_init(void);
 
 extern void disp_flush(lv_disp_drv_t * disp_drv, const lv_area_t * area, lv_color_t * color_p);
-//static void gpu_fill(lv_disp_drv_t * disp_drv, lv_color_t * dest_buf, lv_coord_t dest_width,
-//        const lv_area_t * fill_area, lv_color_t color);
 
 /**********************
  *  STATIC VARIABLES
@@ -63,42 +70,17 @@ void lv_port_disp_init(void)
      * -----------------------*/
     disp_init();
 
-    /*-----------------------------
-     * Create a buffer for drawing
-     *----------------------------*/
-
-    /**
-     * LVGL requires a buffer where it internally draws the widgets.
-     * Later this buffer will passed to your display driver's `flush_cb` to copy its content to your display.
-     * The buffer has to be greater than 1 display row
-     *
-     * There are 3 buffering configurations:
-     * 1. Create ONE buffer:
-     *      LVGL will draw the display's content here and writes it to your display
-     *
-     * 2. Create TWO buffer:
-     *      LVGL will draw the display's content to a buffer and writes it your display.
-     *      You should use DMA to write the buffer's content to the display.
-     *      It will enable LVGL to draw the next part of the screen to the other buffer while
-     *      the data is being sent form the first buffer. It makes rendering and flushing parallel.
-     *
-     * 3. Double buffering
-     *      Set 2 screens sized buffers and set disp_drv.full_refresh = 1.
-     *      This way LVGL will always provide the whole rendered screen in `flush_cb`
-     *      and you only need to change the frame buffer's address.
-     */
 
     /* Example for 1) */
-
-    lv_disp_draw_buf_init(&draw_buf_dsc_1, buf_1, NULL, MY_DISP_HOR_RES * LV_VER_SIZE);   /*Initialize the display buffer*/
+    //lv_disp_draw_buf_init(&draw_buf_dsc_1, buf_1, NULL, MY_DISP_HOR_RES * 79);   /*Initialize the display buffer*/
 
     /* Example for 2) */
-//    static lv_disp_draw_buf_t draw_buf_dsc_2;
-//    static lv_color_t buf_2_1[MY_DISP_HOR_RES * 10];                        /*A buffer for 10 rows*/
-//    static lv_color_t buf_2_2[MY_DISP_HOR_RES * 10];                        /*An other buffer for 10 rows*/
-//    lv_disp_draw_buf_init(&draw_buf_dsc_2, buf_2_1, buf_2_2, MY_DISP_HOR_RES * 10);   /*Initialize the display buffer*/
+    static lv_disp_draw_buf_t draw_buf_dsc_2;
+    __attribute__((section (".RAM_D2")))static lv_color_t buf_2_1[MY_DISP_HOR_RES * 79];                        /*A buffer for 10 rows*/
+    __attribute__((section (".RAM_D2")))static lv_color_t buf_2_2[MY_DISP_HOR_RES * 79];                        /*An other buffer for 10 rows*/
+    lv_disp_draw_buf_init(&draw_buf_dsc_2, buf_2_1, buf_2_2, MY_DISP_HOR_RES * 79);   /*Initialize the display buffer*/
 
-//    /* Example for 3) also set disp_drv.full_refresh = 1 below*/
+      /* Example for 3) also set disp_drv.full_refresh = 1 below*/
 //    static lv_disp_draw_buf_t draw_buf_dsc_3;
 //    static lv_color_t buf_3_1[MY_DISP_HOR_RES * MY_DISP_VER_RES];            /*A screen sized buffer*/
 //    static lv_color_t buf_3_2[MY_DISP_HOR_RES * MY_DISP_VER_RES];            /*Another screen sized buffer*/
@@ -122,7 +104,7 @@ void lv_port_disp_init(void)
     disp_drv.flush_cb = disp_flush;
 
     /*Set a display buffer*/
-    disp_drv.draw_buf = &draw_buf_dsc_1;
+    disp_drv.draw_buf = &draw_buf_dsc_2;
 
     /*Required for Example 3)*/
     //disp_drv.full_refresh = 1;
@@ -162,7 +144,7 @@ void disp_disable_update(void)
 {
     disp_flush_enabled = false;
 }
-
+ uint8_t QSPI_TX = 1;
 /*Flush the content of the internal buffer the specific area on the display
  *You can use DMA or any hardware acceleration to do this operation in the background but
  *'lv_disp_flush_ready()' has to be called when finished.*/
@@ -171,8 +153,24 @@ void disp_flush(lv_disp_drv_t * disp_drv, const lv_area_t * area, lv_color_t * c
 	//printf("disp_flush_enabled = %d",disp_flush_enabled);
     if(disp_flush_enabled) 
 	{ 
-		LCD_Fill(area->x1,area->y1,area->x2,area->y2,color_p);		
+		//方式1 使用AXI RAM 作为lvglbuffer，直接将数据通过MDMA发送至QSPI数据寄存器
+		//SCB_InvalidateDCache_by_Addr((uint32_t *)0x24000000, 512*1024);
+		//LCD_Fill(area->x1,area->y1,area->x2,area->y2,color_p);
+		
+		//方式2 使用RAM_D2 288KB 速度200mhz 作为lvglbuffer，AXI RAM 512KB作为显存buffer，按行发送
+		//lcd_buf_fill(area->x1,area->x2,area->y1,area->y2,(uint16_t *)color_p); 
+		//lcd_fill(area->x1,area->x2,area->y1,area->y2);
+		
+		//方式3 在方式2基础上实现帧信号同步，buffer缓存方式不变
+		if(!QSPI_TX)
+		{
+			lcd_buf_fill(area->x1,area->x2,area->y1,area->y2,(uint16_t *)color_p);
+		}
+		
+		
+		//lv_disp_flush_ready(&disp_drv);
     }
+	 
 }
 
 /*OPTIONAL: GPU INTERFACE*/

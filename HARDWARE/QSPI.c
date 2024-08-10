@@ -53,13 +53,13 @@ void QSPI_Init(void)
 	__HAL_RCC_QSPI_RELEASE_RESET();
 	
 	QSPI_Handler.Instance=QUADSPI;
-	QSPI_Handler.Init.ChipSelectHighTime=QSPI_CS_HIGH_TIME_8_CYCLE;  //片选为高延时
+	QSPI_Handler.Init.ChipSelectHighTime=QSPI_CS_HIGH_TIME_1_CYCLE;  //片选为高延时
 	QSPI_Handler.Init.ClockMode=QSPI_CLOCK_MODE_3;					//配置时钟模式
-	QSPI_Handler.Init.ClockPrescaler=4;							//配置时钟分频比
+	QSPI_Handler.Init.ClockPrescaler=9;							//配置时钟分频比
 	QSPI_Handler.Init.DualFlash=QSPI_DUALFLASH_DISABLE;				//配置双闪存模式状态
 	QSPI_Handler.Init.FifoThreshold=32;								//配置FIFO中字节阈值（仅在间接模式使用）
 	QSPI_Handler.Init.FlashID=QSPI_FLASH_ID_1;						//配置使用的闪存
-	QSPI_Handler.Init.FlashSize=17;									//配置闪存大小
+	QSPI_Handler.Init.FlashSize=20;									//配置闪存大小
 	QSPI_Handler.Init.SampleShifting=QSPI_SAMPLE_SHIFTING_NONE; 	//配置采样移位
 	HAL_QSPI_Init(&QSPI_Handler);
 	
@@ -80,29 +80,48 @@ void QSPI_Init(void)
 	HAL_NVIC_EnableIRQ(QUADSPI_IRQn);
 	
 	__HAL_RCC_MDMA_CLK_ENABLE();
-	
+
+	#define MDMA_HALFWORD 0
+	#if MDMA_HALFWORD
 	hmdma.Instance = MDMA_Channel0;
 	hmdma.Init.Request = MDMA_REQUEST_QUADSPI_FIFO_TH;
 	hmdma.Init.TransferTriggerMode = MDMA_BUFFER_TRANSFER;
-	hmdma.Init.Priority =  MDMA_PRIORITY_MEDIUM;
+	hmdma.Init.Priority =  MDMA_PRIORITY_HIGH;
 	hmdma.Init.Endianness =  MDMA_LITTLE_HALFWORD_ENDIANNESS_EXCHANGE;
 	hmdma.Init.SourceInc = MDMA_SRC_INC_HALFWORD;
 	hmdma.Init.DestinationInc =  MDMA_DEST_INC_HALFWORD;
 	hmdma.Init.SourceDataSize =  MDMA_SRC_DATASIZE_HALFWORD;
 	hmdma.Init.DestDataSize = MDMA_DEST_INC_HALFWORD;
 	hmdma.Init.DataAlignment = MDMA_DATAALIGN_PACKENABLE;
-	hmdma.Init.BufferTransferLength = 128;
-	hmdma.Init.SourceBurst = MDMA_SOURCE_BURST_SINGLE;
-	hmdma.Init.DestBurst = MDMA_DEST_BURST_SINGLE;
+	hmdma.Init.BufferTransferLength = 32;
+	hmdma.Init.SourceBurst = MDMA_SOURCE_BURST_16BEATS;
+	hmdma.Init.DestBurst = MDMA_DEST_BURST_16BEATS;
 	hmdma.Init.SourceBlockAddressOffset = 0;
 	hmdma.Init.DestBlockAddressOffset = 0;
-	
-	__HAL_LINKDMA(&QSPI_Handler,hmdma,hmdma);
-  
+	#else
+	hmdma.Instance = MDMA_Channel0;
+	hmdma.Init.Request = MDMA_REQUEST_QUADSPI_FIFO_TH;
+	hmdma.Init.TransferTriggerMode = MDMA_BUFFER_TRANSFER;
+	hmdma.Init.Priority =  MDMA_PRIORITY_HIGH;
+	hmdma.Init.Endianness =  MDMA_LITTLE_BYTE_ENDIANNESS_EXCHANGE;
+	hmdma.Init.SourceInc = MDMA_SRC_INC_BYTE;
+	hmdma.Init.DestinationInc =  MDMA_DEST_INC_DISABLE;
+	hmdma.Init.SourceDataSize =  MDMA_SRC_DATASIZE_BYTE;
+	hmdma.Init.DestDataSize = MDMA_DEST_INC_BYTE;
+	hmdma.Init.DataAlignment = MDMA_DATAALIGN_PACKENABLE;
+	hmdma.Init.BufferTransferLength = 32;
+	hmdma.Init.SourceBurst = MDMA_SOURCE_BURST_32BEATS;
+	hmdma.Init.DestBurst = MDMA_DEST_BURST_32BEATS;
+	hmdma.Init.SourceBlockAddressOffset = 0;
+	hmdma.Init.DestBlockAddressOffset = 0;
+	#endif
+
     HAL_MDMA_DeInit(&hmdma);  
 	HAL_MDMA_Init(&hmdma);
-  
-	HAL_NVIC_SetPriority(MDMA_IRQn,0x05,0);
+	
+	__HAL_LINKDMA(&QSPI_Handler,hmdma,hmdma);
+
+	HAL_NVIC_SetPriority(MDMA_IRQn,0x02,0);
 	HAL_NVIC_EnableIRQ(MDMA_IRQn);
 }
 

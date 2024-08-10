@@ -5,7 +5,11 @@
 void LCD_Fill1(uint16_t xs,uint16_t ys,uint16_t xe,uint16_t ye,uint32_t color);
 void LCD_Fill(uint16_t xs,uint16_t ys,uint16_t xe,uint16_t ye,lv_color_t *color);
 void obj_add_anim();
-
+//void lcdqspi_draw_line(uint32_t x0, uint32_t x1, uint32_t y0, uint32_t y1,uint16_t *pixel);
+void lcdqspi_draw_line(uint16_t x0, uint16_t x1, uint32_t y,uint16_t y0,uint16_t y1 ,uint16_t *pixel);
+void lcd_fill(uint16_t xs,uint16_t xe,uint16_t ys,uint16_t ye); 
+void lcd_buf_fill(uint32_t x0, uint32_t x1, uint32_t y0, uint32_t y1,uint16_t *pixel);
+void LCD_DRAW_LINE_DMA();
 //»­±ÊÑÕÉ«
 #define WHITE         	 0xFFFF
 #define BLACK         	 0x0000	  

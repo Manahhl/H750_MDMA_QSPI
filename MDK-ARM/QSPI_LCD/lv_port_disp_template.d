@@ -185,13 +185,13 @@ qspi_lcd/lv_port_disp_template.o: \
   ..\LVGL\src\extra\widgets\imgbtn\..\..\..\lvgl.h \
   ..\LVGL\src\extra\widgets\span\lv_span.h \
   ..\LVGL\src\extra\widgets\span\..\..\..\lvgl.h \
-  ..\LVGL\src\hal\lv_hal_disp.h ..\HARDWARE\lcd.h ..\HARDWARE\lcd_init.h \
-  ..\HARDWARE\QSPI.h ..\Drivers\STM32H7xx_HAL_Driver\Inc\stm32h7xx_hal.h \
+  ..\LVGL\src\hal\lv_hal_disp.h ..\Core\Inc\main.h \
+  ..\Drivers\STM32H7xx_HAL_Driver\Inc\stm32h7xx_hal.h \
   ..\Core\Inc\stm32h7xx_hal_conf.h \
   ..\Drivers\STM32H7xx_HAL_Driver\Inc\stm32h7xx_hal_rcc.h \
   ..\Drivers\STM32H7xx_HAL_Driver\Inc\stm32h7xx_hal_def.h \
   ..\Drivers\CMSIS\Device\ST\STM32H7xx\Include\stm32h7xx.h \
-  ..\Drivers\CMSIS\Device\ST\STM32H7xx\Include\stm32h750xx.h \
+  D:\Program\ Files\ (x86)\Keil5\PACK\Keil\STM32H7xx_DFP\3.1.1\Drivers\CMSIS\Device\ST\STM32H7xx\Include\stm32h743xx.h \
   ..\Drivers\CMSIS\Include\core_cm7.h \
   ..\Drivers\CMSIS\Include\cmsis_version.h \
   ..\Drivers\CMSIS\Include\cmsis_compiler.h \
@@ -199,7 +199,7 @@ qspi_lcd/lv_port_disp_template.o: \
   D:\Program\ Files\ (x86)\Keil5\CORE\ARM\ARMCLANG\Bin\..\include\arm_compat.h \
   D:\Program\ Files\ (x86)\Keil5\CORE\ARM\ARMCLANG\Bin\..\include\arm_acle.h \
   ..\Drivers\CMSIS\Include\mpu_armv7.h \
-  ..\Drivers\CMSIS\Device\ST\STM32H7xx\Include\system_stm32h7xx.h \
+  D:\Program\ Files\ (x86)\Keil5\PACK\Keil\STM32H7xx_DFP\3.1.1\Drivers\CMSIS\Device\ST\STM32H7xx\Include\system_stm32h7xx.h \
   ..\Drivers\STM32H7xx_HAL_Driver\Inc\Legacy\stm32_hal_legacy.h \
   D:\Program\ Files\ (x86)\Keil5\CORE\ARM\ARMCLANG\Bin\..\include\math.h \
   ..\Drivers\STM32H7xx_HAL_Driver\Inc\stm32h7xx_hal_rcc_ex.h \
@@ -221,4 +221,8 @@ qspi_lcd/lv_port_disp_template.o: \
   ..\Drivers\STM32H7xx_HAL_Driver\Inc\stm32h7xx_hal_tim.h \
   ..\Drivers\STM32H7xx_HAL_Driver\Inc\stm32h7xx_hal_tim_ex.h \
   ..\Drivers\STM32H7xx_HAL_Driver\Inc\stm32h7xx_hal_uart.h \
-  ..\Drivers\STM32H7xx_HAL_Driver\Inc\stm32h7xx_hal_uart_ex.h
+  ..\Drivers\STM32H7xx_HAL_Driver\Inc\stm32h7xx_hal_uart_ex.h \
+  D:\Program\ Files\ (x86)\Keil5\CORE\ARM\ARMCLANG\Bin\..\include\stdio.h \
+  ..\Core\Inc\mpu.h ..\HARDWARE\lcd.h ..\HARDWARE\lcd_init.h \
+  ..\HARDWARE\QSPI.h \
+  D:\Program\ Files\ (x86)\Keil5\CORE\ARM\ARMCLANG\Bin\..\include\stdlib.h

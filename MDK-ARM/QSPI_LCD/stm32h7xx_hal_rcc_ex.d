@@ -5,7 +5,7 @@ qspi_lcd/stm32h7xx_hal_rcc_ex.o: \
   ..\Drivers\STM32H7xx_HAL_Driver\Inc\stm32h7xx_hal_rcc.h \
   ..\Drivers\STM32H7xx_HAL_Driver\Inc\stm32h7xx_hal_def.h \
   ..\Drivers\CMSIS\Device\ST\STM32H7xx\Include\stm32h7xx.h \
-  ..\Drivers\CMSIS\Device\ST\STM32H7xx\Include\stm32h750xx.h \
+  D:\Program\ Files\ (x86)\Keil5\PACK\Keil\STM32H7xx_DFP\3.1.1\Drivers\CMSIS\Device\ST\STM32H7xx\Include\stm32h743xx.h \
   ..\Drivers\CMSIS\Include\core_cm7.h \
   D:\Program\ Files\ (x86)\Keil5\CORE\ARM\ARMCLANG\Bin\..\include\stdint.h \
   ..\Drivers\CMSIS\Include\cmsis_version.h \
@@ -14,7 +14,7 @@ qspi_lcd/stm32h7xx_hal_rcc_ex.o: \
   D:\Program\ Files\ (x86)\Keil5\CORE\ARM\ARMCLANG\Bin\..\include\arm_compat.h \
   D:\Program\ Files\ (x86)\Keil5\CORE\ARM\ARMCLANG\Bin\..\include\arm_acle.h \
   ..\Drivers\CMSIS\Include\mpu_armv7.h \
-  ..\Drivers\CMSIS\Device\ST\STM32H7xx\Include\system_stm32h7xx.h \
+  D:\Program\ Files\ (x86)\Keil5\PACK\Keil\STM32H7xx_DFP\3.1.1\Drivers\CMSIS\Device\ST\STM32H7xx\Include\system_stm32h7xx.h \
   ..\Drivers\STM32H7xx_HAL_Driver\Inc\Legacy\stm32_hal_legacy.h \
   D:\Program\ Files\ (x86)\Keil5\CORE\ARM\ARMCLANG\Bin\..\include\stddef.h \
   D:\Program\ Files\ (x86)\Keil5\CORE\ARM\ARMCLANG\Bin\..\include\math.h \

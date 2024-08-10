@@ -130,7 +130,7 @@ typedef enum
     #define __ALIGN_BEGIN
   #endif
   #ifndef __ALIGN_END
-    #define __ALIGN_END      __attribute__ ((aligned (4)))
+    #define __ALIGN_END      __attribute__ ((aligned (2)))
   #endif
 #elif defined ( __GNUC__ ) && !defined (__CC_ARM) /* GNU Compiler */
   #ifndef __ALIGN_END

@@ -76,21 +76,17 @@ void MX_GPIO_Init(void)
 }
 
 /* USER CODE BEGIN 2 */
-/**data：2024/07/23
-** test：测试使用GPIO读取te信号实现画面同步
-** conlusion：测试不通
+/**data：2024/08/10
+** test：使用GPIO读取te信号实现画面同步
+** conlusion：测试通过
 */
-//extern volatile uint8_t QSPI_TX;
-//extern lv_disp_drv_t *disp_drv;
+extern uint8_t QSPI_TX;
 void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
 {
-//	while(QSPI_TX == 1)
-//	{   
-//		
-//		lv_disp_flush_ready(&disp_drv);
-//		disp_enable_update();
-//		QSPI_TX = 0;
-//	}
+	if((QSPI_TX == 1)&&(GPIO_Pin == GPIO_PIN_1))
+	{   
+		QSPI_TX = 0;
+	}
   //HAL_GPIO_TogglePin(GPIOE,GPIO_PIN_3);
 }
 void EXTI1_IRQHandler(void)

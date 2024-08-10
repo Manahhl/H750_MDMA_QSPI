@@ -52,7 +52,7 @@
     #define LV_MEM_SIZE (64U * 1024U)          /*[bytes]*/
 
     /*Set an address for the memory pool instead of allocating it as a normal array. Can be in external SRAM too.*/
-    #define LV_MEM_ADR 0     /*0: unused*/
+    #define LV_MEM_ADR 0x38000000     /*0: unused*/
     /*Instead of an address give a memory allocator that will be called to get a memory pool for LVGL. E.g. my_malloc*/
     #if LV_MEM_ADR == 0
         #undef LV_MEM_POOL_INCLUDE
@@ -78,7 +78,7 @@
  *====================*/
 
 /*Default display refresh period. LVG will redraw changed areas with this period time*/
-#define LV_DISP_DEF_REFR_PERIOD 30      /*[ms]*/
+#define LV_DISP_DEF_REFR_PERIOD 2      /*[ms]*/
 
 /*Input device read period in milliseconds*/
 #define LV_INDEV_DEF_READ_PERIOD 30     /*[ms]*/
@@ -136,8 +136,8 @@
  * "Transformed layers" (where transform_angle/zoom properties are used) use larger buffers
  * and can't be drawn in chunks. So these settings affects only widgets with opacity.
  */
-#define LV_LAYER_SIMPLE_BUF_SIZE          (24 * 1024)
-#define LV_LAYER_SIMPLE_FALLBACK_BUF_SIZE (3 * 1024)
+#define LV_LAYER_SIMPLE_BUF_SIZE          (30 * 1024)
+#define LV_LAYER_SIMPLE_FALLBACK_BUF_SIZE (6 * 1024)
 
 /*Default image cache size. Image caching keeps the images opened.
  *If only the built-in image formats are used there is no real advantage of caching. (I.e. if no new image decoder is added)
@@ -583,7 +583,7 @@
     #define LV_THEME_DEFAULT_GROW 1
 
     /*Default transition time in [ms]*/
-    #define LV_THEME_DEFAULT_TRANSITION_TIME 80
+    #define LV_THEME_DEFAULT_TRANSITION_TIME 40
 #endif /*LV_USE_THEME_DEFAULT*/
 
 /*A very simple theme that is a good starting point for a custom theme*/

@@ -1,5 +1,5 @@
 ;********************************************************************************
-;* File Name          : startup_stm32h750xx.s
+;* File Name          : startup_stm32h743xx.s
 ;* @author  MCD Application Team
 ;* Description        : STM32H7xx devices vector table for MDK-ARM toolchain. 
 ;*                      This module performs:
@@ -14,7 +14,7 @@
 ;******************************************************************************
 ;* @attention
 ;*
-;* Copyright (c) 2018 STMicroelectronics.
+;* Copyright (c) 2017 STMicroelectronics.
 ;* All rights reserved.
 ;*
 ;* This software is licensed under terms that can be found in the LICENSE file
@@ -154,8 +154,8 @@ __Vectors       DCD     __initial_sp                      ; Top of Stack
                 DCD     OTG_HS_WKUP_IRQHandler            ; USB OTG HS Wakeup through EXTI                         
                 DCD     OTG_HS_IRQHandler                 ; USB OTG HS                    
                 DCD     DCMI_IRQHandler                   ; DCMI                            
-                DCD     CRYP_IRQHandler                   ; CRYP crypto                     
-                DCD     HASH_RNG_IRQHandler               ; Hash and Rng
+                DCD     0                                 ; Reserved                                     
+                DCD     RNG_IRQHandler                    ; Rng
                 DCD     FPU_IRQHandler                    ; FPU
                 DCD     UART7_IRQHandler                  ; UART7
                 DCD     UART8_IRQHandler                  ; UART8
@@ -366,8 +366,7 @@ Default_Handler PROC
                 EXPORT  OTG_HS_WKUP_IRQHandler            [WEAK]                        
                 EXPORT  OTG_HS_IRQHandler                 [WEAK]                                      
                 EXPORT  DCMI_IRQHandler                   [WEAK]                                             
-                EXPORT  CRYP_IRQHandler                   [WEAK]                                     
-                EXPORT  HASH_RNG_IRQHandler               [WEAK]
+                EXPORT  RNG_IRQHandler                    [WEAK]
                 EXPORT  FPU_IRQHandler                    [WEAK]
                 EXPORT  UART7_IRQHandler                  [WEAK]
                 EXPORT  UART8_IRQHandler                  [WEAK]
@@ -428,7 +427,7 @@ Default_Handler PROC
                 EXPORT  LPTIM4_IRQHandler                 [WEAK]                                            
                 EXPORT  LPTIM5_IRQHandler                 [WEAK]                                            
                 EXPORT  LPUART1_IRQHandler                [WEAK]                                                  
-                EXPORT  CRS_IRQHandler                    [WEAK]                                   
+                EXPORT  CRS_IRQHandler                    [WEAK]
                 EXPORT  ECC_IRQHandler                    [WEAK] 				
                 EXPORT  SAI4_IRQHandler                   [WEAK]                                                                                     
                 EXPORT  WAKEUP_PIN_IRQHandler             [WEAK] 
@@ -508,8 +507,7 @@ OTG_HS_EP1_IN_IRQHandler
 OTG_HS_WKUP_IRQHandler   
 OTG_HS_IRQHandler        
 DCMI_IRQHandler                                                            
-CRYP_IRQHandler                                                    
-HASH_RNG_IRQHandler
+RNG_IRQHandler
 FPU_IRQHandler  
 UART7_IRQHandler                  
 UART8_IRQHandler                  
@@ -570,7 +568,7 @@ LPTIM3_IRQHandler
 LPTIM4_IRQHandler                                                                 
 LPTIM5_IRQHandler                                                                 
 LPUART1_IRQHandler                                                                                                                         
-CRS_IRQHandler                                                            
+CRS_IRQHandler
 ECC_IRQHandler                                                            
 SAI4_IRQHandler      
 WAKEUP_PIN_IRQHandler

@@ -1,11 +1,12 @@
 --cpu Cortex-M7.fp.dp
-"qspi_lcd\startup_stm32h750xx.o"
+"qspi_lcd\startup_stm32h743xx.o"
 "qspi_lcd\main.o"
 "qspi_lcd\gpio.o"
 "qspi_lcd\usart.o"
 "qspi_lcd\stm32h7xx_it.o"
 "qspi_lcd\stm32h7xx_hal_msp.o"
 "qspi_lcd\tim.o"
+"qspi_lcd\mpu.o"
 "qspi_lcd\stm32h7xx_hal_cortex.o"
 "qspi_lcd\stm32h7xx_hal_tim.o"
 "qspi_lcd\stm32h7xx_hal_tim_ex.o"
@@ -234,7 +235,7 @@
 "qspi_lcd\img_lv_demo_music_wave_bottom_large.o"
 "qspi_lcd\img_lv_demo_music_wave_top.o"
 "qspi_lcd\img_lv_demo_music_wave_top_large.o"
---library_type=microlib --strict --scatter "QSPI_LCD\QSPI_LCD.sct"
+--library_type=microlib --strict --scatter ".\stm32-v7.sct"
 --summary_stderr --info summarysizes --map --load_addr_map_info --xref --callgraph --symbols
 --info sizes --info totals --info unused --info veneers
 --list "QSPI_LCD.map" -o QSPI_LCD\QSPI_LCD.axf
